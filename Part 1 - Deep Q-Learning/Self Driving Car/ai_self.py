@@ -47,7 +47,7 @@ class Network(nn.Module):
         self.fc1 = nn.Linear(input_size, 30)
         
         # fc2 -> connects hidden to output layer
-        self.fc1 = nn.Linear(30, nb_action)
+        self.fc2 = nn.Linear(30, nb_action)
         
     '''
     state = input of our neural network
@@ -159,7 +159,7 @@ class Dqn():
         # ex softmax([1,2,3]) => [0.04,0.11,0.85]. Applying T=3
         # softmax([1,2,3]*3) => [0, 0.02, 0.98] higher probabilities, more surity
         # Increasing the temperature leads to more surity while taking decisions
-        probs = F.softmax(self.model(Variable(state, volatile = True))*7)
+        probs = F.softmax(self.model(Variable(state, volatile = True))*100)
         
         #now we m=need a random draw from this distribution
         action = probs.multinomial() # returns pytorch variable with fake dim(which is the batch_size)
@@ -189,7 +189,7 @@ class Dqn():
         next_outputs = self.model(batch_next_state).detach().max(1)[0]
         
         # calculate target according to Q-learning algorithm
-        target = self.gamma* next_outputs + batch_reward
+        target = self.gamma*next_outputs + batch_reward
         
         # calculate temporal-difference, Huber loss function is used
         # represented by smooth_l1_loss. Best Loss funcn for Deep Q-Learning
@@ -259,7 +259,7 @@ class Dqn():
 
     def score(self):
         # add 1 to avoid denominator being 0
-        return sum(self.reward_window)/(len(self.reward_window))+1
+        return sum(self.reward_window)/(len(self.reward_window)+1.)
 
     def save(self):
         # state_dict() -> saves the parameters of the model
