@@ -19,7 +19,6 @@ from ppaquette_gym_doom.wrappers.action_space import ToDiscrete
 import experience_replay, image_preprocessing
 
 
-
 # Part 1 - Building the AI
 
 # Making the brain
